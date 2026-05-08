@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Mi Eterna Guerrera 👑</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,700;1,400&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --rosa: #c2185b; --oro: #d4af37; }
+        body { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; background: linear-gradient(180deg, #fff5f7 0%, #ffdee9 100%); overflow-x: hidden; touch-action: manipulation; }
+        
+        #pantalla-carta { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: 0.6s ease-in-out; cursor: pointer; }
+        .envelope { width: 130px; height: 85px; background: var(--rosa); position: relative; border-radius: 0 0 10px 10px; }
+        .envelope::before { content: ''; position: absolute; top: -70px; left: 0; border-left: 65px solid transparent; border-right: 65px solid transparent; border-bottom: 75px solid var(--rosa); }
+        .heart-seal { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 40px; animation: pulse-heart 1.2s infinite; }
+        
+        #pantalla-principal { display: none; flex-direction: column; align-items: center; padding: 40px 15px 120px; min-height: 100vh; }
+        .titulo-animado { font-family: 'Great Vibes', cursive; font-size: 3.2rem; text-align: center; color: var(--rosa); animation: levitate 2s ease-in-out infinite, shine-title 3s linear infinite; margin-bottom: 30px; }
+
+        @keyframes levitate { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes shine-title { 0%, 100% { color: var(--rosa); } 50% { color: #ff4081; text-shadow: 0 0 15px rgba(233, 30, 99, 0.5); } }
+        
+        .grid { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 12px; }
+        .module { background: white; border-radius: 18px; overflow: hidden; border-left: 6px solid var(--rosa); box-shadow: 0 4px 12px rgba(0,0,0,0.06); cursor: pointer; transition: 0.3s; }
+        .module-header { padding: 18px 20px; font-weight: 600; color: var(--rosa); display: flex; align-items: center; justify-content: space-between; }
+        
+        .module-content { max-height: 0; padding: 0 20px; transition: all 0.4s ease-out; font-family: 'Playfair Display', serif; font-size: 1.05rem; color: #444; line-height: 1.6; overflow: hidden; }
+        .module.active { border-left-color: var(--oro); transform: scale(1.02); }
+        .module.active .module-content { max-height: 400px; padding-top: 10px; padding-bottom: 20px; border-top: 1px solid #eee; }
+
+        #modulo-final { display: none; border-left: 6px solid var(--oro); animation: fadeInUp 1.2s; background: #fffdf5; box-shadow: 0 0 25px rgba(212, 175, 55, 0.4); }
+
+        #btn-audio { position: fixed; bottom: 30px; right: 30px; width: 55px; height: 55px; background: white; border-radius: 50%; display: none; justify-content: center; align-items: center; color: var(--rosa); z-index: 2000; border: 2px solid var(--rosa); }
+
+        .falling { position: fixed; top: -10%; pointer-events: none; animation: fall linear forwards; z-index: 50; }
+        @keyframes fall { to { transform: translateY(110vh) rotate(540deg); } }
+    </style>
+</head>
+<body>
+
+    <audio id="musica" loop><source src="musica.mp3" type="audio/mpeg"></audio>
+    <div id="btn-audio" onclick="toggleMusica()">🔊</div>
+
+    <div id="pantalla-carta" onclick="abrir()">
+        <div class="envelope"><div class="heart-seal">💝</div></div>
+        <h2 style="color:var(--rosa); margin-top:50px; font-family:'Playfair Display'; text-align:center;">Para mi eterna guerrera... 🌹</h2>
+        <p style="color: #888; font-size: 0.85rem;">Toca para abrir mi corazón</p>
+    </div>
+
+    <div id="pantalla-principal">
+        <h1 class="titulo-animado">¡Feliz Día, Mi Reina! 👑</h1>
+
+        <div class="grid">
+            <div class="module" onclick="clickModulo(this, 1)">
+                <div class="module-header"><h3>💖 Mi Amor y Valentía</h3></div>
+                <div class="module-content" data-text="Mi vida, sé que el camino ha sido duro y te ha tocado luchar con mucha fuerza 🛤️💪. Pero tu corazón es noble y has sabido convertir cada momento en puro cariño para nosotros 🌹🥰. Te admiro tanto, mi reina."></div>
+            </div>
+
+            <div class="module" onclick="clickModulo(this, 2)">
+                <div class="module-header"><h3>💍 Mi Gran Compañera</h3></div>
+                <div class="module-content" data-text="Gracias mi cielo por estar siempre a mi lado 👫❤️. Eres mi apoyo incondicional y mi gran compañera en todo. Tu espíritu guerrero es lo que nos mantiene unidos y felices, mi corazón 🛡️💞✨."></div>
+            </div>
+
+            <div class="module" onclick="clickModulo(this, 3)">
+                <div class="module-header"><h3>👧 Nuestra Princesita</h3></div>
+                <div class="module-content" data-text="Nuestra bendición ya tiene 1 año 🎂 y ya casi cumple sus 2 añitos 👶💖. Verte ser mamá es lo más hermoso de mi vida; eres su refugio y mi mayor orgullo, mi reina adorada 🫂🤱💕."></div>
+            </div>
+
+            <div class="module" onclick="clickModulo(this, 4)">
+                <div class="module-header"><h3>♾️ Te Amo Infinito</h3></div>
+                <div class="module-content" data-text="Mi corazon, prometo cuidarte y amarte en cada paso que demos juntos ❤️🔥. Eres mi mundo entero y hoy celebramos lo maravillosa que eres. ¡Te amo con toda mi alma, mi guerrera eterna! 💏💓✨"></div>
+            </div>
+
+            <div class="module" id="modulo-final" onclick="clickModulo(this, 5)">
+                <div class="module-header"><h3>👑 LA MEJOR MADRE</h3></div>
+                <div class="module-content" data-text="Por tu amor infinito y tu dulzura, por cuidarnos con tanta paciencia y ser el motor de nuestras vidas 💓🌟. ¡Eres la mejor madre del universo entero, mi vida! 🤱❤️🌹👸"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const audio = document.getElementById('musica');
+        const modulosLeidos = new Set();
+        let soloFlores = false;
+
+        function abrir() {
+            audio.currentTime = 105;
+            audio.play().catch(() => { document.getElementById('btn-audio').innerHTML = '🔈'; });
+            document.getElementById('pantalla-carta').style.transform = 'translateY(-100%)';
+            setTimeout(() => {
+                document.getElementById('pantalla-carta').style.display = 'none';
+                document.getElementById('pantalla-principal').style.display = 'flex';
+                document.getElementById('btn-audio').style.display = 'flex';
+                lluvia();
+            }, 600);
+        }
+
+        function clickModulo(el, id) {
+            const isActive = el.classList.contains('active');
+            document.querySelectorAll('.module').forEach(m => m.classList.remove('active'));
+            
+            if (!isActive) {
+                el.classList.add('active');
+                
+                if (id === 5) {
+                    soloFlores = true; // Cambia la lluvia a solo flores
+                    // EXPLOSIÓN GIGANTE DORADA AL ABRIR EL ÚLTIMO
+                    confetti({ particleCount: 150, spread: 100, origin: { y: 0.7 }, colors: ['#d4af37', '#ffffff', '#ffd700'] });
+                }
+
+                const cont = el.querySelector('.module-content');
+                if (cont.innerHTML === "") {
+                    let texto = cont.getAttribute('data-text'), i = 0;
+                    function escribir() {
+                        if (i < texto.length) {
+                            cont.innerHTML += texto.charAt(i); i++;
+                            setTimeout(escribir, 60); 
+                        } else {
+                            if(id < 5) modulosLeidos.add(id);
+                            verificarFinal();
+                        }
+                    }
+                    escribir();
+                }
+            }
+        }
+
+        function verificarFinal() {
+            if (modulosLeidos.size === 4) {
+                const final = document.getElementById('modulo-final');
+                if(final.style.display !== 'block') {
+                    setTimeout(() => {
+                        final.style.display = 'block';
+                        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                        
+                        // EXPLOSIÓN TRIPLE (Lados y Abajo)
+                        const count = 200;
+                        const defaults = { origin: { y: 0.9 }, colors: ['#c2185b', '#d4af37'] };
+
+                        function fire(particleRatio, opts) {
+                          confetti(Object.assign({}, defaults, opts, { particleCount: Math.floor(count * particleRatio) }));
+                        }
+
+                        fire(0.25, { spread: 26, startVelocity: 55 });
+                        fire(0.2, { spread: 60 });
+                        fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+                        fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+                        fire(0.1, { spread: 120, startVelocity: 45 });
+
+                        // Explosión desde la izquierda y derecha
+                        confetti({ particleCount: 80, angle: 60, spread: 55, origin: { x: 0, y: 0.8 } });
+                        confetti({ particleCount: 80, angle: 120, spread: 55, origin: { x: 1, y: 0.8 } });
+
+                    }, 2000); 
+                }
+            }
+        }
+
+        function toggleMusica() {
+            if (audio.paused) { audio.play(); document.getElementById('btn-audio').innerHTML = '🔊'; }
+            else { audio.pause(); document.getElementById('btn-audio').innerHTML = '🔈'; }
+        }
+
+        function lluvia() {
+            setInterval(() => {
+                const r = document.createElement('div');
+                r.className = 'falling';
+                // Si soloFlores es true, solo caen rosas y tulipanes
+                const flores = ['🌹','🌷','🌸','🌺','🌻'];
+                const mixto = ['🌹','💖','❤️','👑','👶'];
+                
+                r.innerHTML = soloFlores ? flores[Math.floor(Math.random()*flores.length)] : mixto[Math.floor(Math.random()*mixto.length)];
+                
+                r.style.left = Math.random() * 100 + 'vw';
+                r.style.fontSize = (Math.random() * 15 + 20) + 'px';
+                r.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                document.body.appendChild(r);
+                setTimeout(() => r.remove(), 5000);
+            }, 500);
+        }
+    </script>
+</body>
+  </html>
